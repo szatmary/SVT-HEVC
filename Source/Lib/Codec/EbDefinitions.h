@@ -526,16 +526,18 @@ typedef void * EB_HANDLE;
 #define MAX_POC UINT_MAX
 #endif
 
-#define LIB_PRINTF_ENABLE                1
-#if LIB_PRINTF_ENABLE
-#define SVT_LOG printf
-#else
-#if _MSC_VER
-#define SVT_LOG(s, ...) printf("")
-#else
-#define SVT_LOG(s, ...) printf("",##__VA_ARGS__)
-#endif
-#endif
+// #define LIB_PRINTF_ENABLE                1
+// #if LIB_PRINTF_ENABLE
+// #define SVT_LOG printf
+// #else
+// #if _MSC_VER
+// #define SVT_LOG(s, ...) printf("")
+// #else
+// #define SVT_LOG(s, ...) printf("",##__VA_ARGS__)
+// #endif
+// #endif
+
+extern int(*SVT_LOG)( const char * format, ... );
 
 #define EB_CREATE_SEMAPHORE(pointer, initialCount, maxCount) \
     do { \

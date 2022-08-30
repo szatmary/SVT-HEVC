@@ -4011,3 +4011,10 @@ void EbOutputReconBufferHeaderDestroyer(EB_PTR p)
     EB_FREE(obj->pBuffer);
     EB_FREE(obj);
 }
+
+// Global log callback function
+int(*SVT_LOG)( const char * format, ... ) = printf;
+void EbSetLogCallback(int(*pCallback)( const char * format, ... ))
+{
+    SVT_LOG = pCallback;
+}

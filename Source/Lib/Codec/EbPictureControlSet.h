@@ -14,7 +14,6 @@
 #include "EbPictureBufferDesc.h"
 #include "EbCodingUnit.h"
 #include "EbEntropyCodingObject.h"
-#include "EbDefinitions.h"
 #include "EbPredictionStructure.h"
 #include "EbNeighborArrays.h"
 #include "EbModeDecisionSegments.h"

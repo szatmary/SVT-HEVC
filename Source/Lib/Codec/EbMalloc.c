@@ -303,13 +303,13 @@ static void PrintTop10Llocations() {
     ForEachHashEntry(gMemEntry, 0, CollectMem, &type);
     qsort(gProfileEntry, MEM_ENTRY_SIZE, sizeof(MemoryEntry), CompareCount);
 
-    printf("top 10 %s locations:\r\n", ResourceTypeName(type));
+    SVT_LOG("top 10 %s locations:\r\n", ResourceTypeName(type));
     for (int i = 0; i < 10; i++) {
         double usage;
         char scale;
         MemoryEntry* e = gProfileEntry + i;
         GetMemoryUsageAndScale(e->count, &usage, &scale);
-        printf("(%.2lf %cB): %s:%d\r\n", usage, scale, e->file, e->line);
+        SVT_LOG("(%.2lf %cB): %s:%d\r\n", usage, scale, e->file, e->line);
     }
     free(gProfileEntry);
     EbReleaseMutex(m);
@@ -330,21 +330,21 @@ void EbPrintMemoryUsage()
     memset(&sum, 0, sizeof(MemSummary));
 
     ForEachMemEntry(0, CountMemEntry, &sum);
-    printf("SVT Memory Usage:\r\n");
+    SVT_LOG("SVT Memory Usage:\r\n");
     GetMemoryUsageAndScale(sum.amount[EB_N_PTR] + sum.amount[EB_C_PTR] + sum.amount[EB_A_PTR], &usage, &scale);
-    printf("    total allocated memory:       %.2lf %cB\r\n", usage, scale);
+    SVT_LOG("    total allocated memory:       %.2lf %cB\r\n", usage, scale);
     GetMemoryUsageAndScale(sum.amount[EB_N_PTR], &usage, &scale);
-    printf("        malloced memory:          %.2lf %cB\r\n", usage, scale);
+    SVT_LOG("        malloced memory:          %.2lf %cB\r\n", usage, scale);
     GetMemoryUsageAndScale(sum.amount[EB_C_PTR], &usage, &scale);
-    printf("        callocated memory:        %.2lf %cB\r\n", usage, scale);
+    SVT_LOG("        callocated memory:        %.2lf %cB\r\n", usage, scale);
     GetMemoryUsageAndScale(sum.amount[EB_A_PTR], &usage, &scale);
-    printf("        allocated aligned memory: %.2lf %cB\r\n", usage, scale);
+    SVT_LOG("        allocated aligned memory: %.2lf %cB\r\n", usage, scale);
 
-    printf("    mutex count: %d\r\n", (int)sum.amount[EB_MUTEX]);
-    printf("    semaphore count: %d\r\n", (int)sum.amount[EB_SEMAPHORE]);
-    printf("    thread count: %d\r\n", (int)sum.amount[EB_THREAD]);
+    SVT_LOG("    mutex count: %d\r\n", (int)sum.amount[EB_MUTEX]);
+    SVT_LOG("    semaphore count: %d\r\n", (int)sum.amount[EB_SEMAPHORE]);
+    SVT_LOG("    thread count: %d\r\n", (int)sum.amount[EB_THREAD]);
     fulless = (double)sum.occupied / MEM_ENTRY_SIZE;
-    printf("    hash table fulless: %f, hash bucket is %s\r\n", fulless, fulless < .3 ? "healthy":"too full" );
+    SVT_LOG("    hash table fulless: %f, hash bucket is %s\r\n", fulless, fulless < .3 ? "healthy":"too full" );
 #ifdef PROFILE_MEMORY_USAGE
     PrintTop10Llocations();
 #endif
@@ -385,7 +385,7 @@ void EbDecreaseComponentCount()
         EB_BOOL leaked = EB_FALSE;
         ForEachHashEntry(gMemEntry, 0, PrintLeak, &leaked);
         if (!leaked) {
-            printf("SVT: you have no memory leak\r\n");
+            SVT_LOG("SVT: you have no memory leak\r\n");
         }
     }
     EbReleaseMutex(m);

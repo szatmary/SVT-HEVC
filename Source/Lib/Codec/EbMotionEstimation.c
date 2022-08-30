@@ -3655,7 +3655,7 @@ static void TestSearchAreaBounds(
     }
 
     else {
-        printf("error no center selected");
+        SVT_LOG("error no center selected");
     }
 
     *xsc = xSearchCenter;

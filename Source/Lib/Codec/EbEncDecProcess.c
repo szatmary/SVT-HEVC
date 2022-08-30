@@ -2849,7 +2849,7 @@ void* EncDecKernel(void *inputPtr)
                     lcuPtr = pictureControlSetPtr->lcuPtrArray[lcuIndex];
                     lcuOriginX = (xLcuIndex+tileGroupLcuStartX) << lcuSizeLog2;
                     lcuOriginY = (yLcuIndex+tileGroupLcuStartY) << lcuSizeLog2;
-                    //printf("Process lcu (%d, %d), lcuIndex %d, segmentIndex %d\n", lcuOriginX, lcuOriginY, lcuIndex, segmentIndex);
+                    //SVT_LOG("Process lcu (%d, %d), lcuIndex %d, segmentIndex %d\n", lcuOriginX, lcuOriginY, lcuIndex, segmentIndex);
                     
                     if (sequenceControlSetPtr->staticConfig.segmentOvEnabled && pictureControlSetPtr->ParentPcsPtr->segmentOvArray != NULL) {
                         SegmentOverride_t* segmentOvPtr = pictureControlSetPtr->ParentPcsPtr->segmentOvArray;
@@ -3048,7 +3048,7 @@ void* EncDecKernel(void *inputPtr)
                 encDecResultsPtr->completedLcuRowCount = lcuRowIndexCount;
                 encDecResultsPtr->tileIndex = lcuRowTileIdx;
 
-                //printf("Post tile %d, line [%d, %d) to entropy\n", lcuRowTileIdx, lcuRowIndexStart, lcuRowIndexStart + lcuRowIndexCount);
+                //SVT_LOG("Post tile %d, line [%d, %d) to entropy\n", lcuRowTileIdx, lcuRowIndexStart, lcuRowIndexStart + lcuRowIndexCount);
                 // Post EncDec Results
                 EbPostFullObject(encDecResultsWrapperPtr);
             }
@@ -3059,7 +3059,7 @@ void* EncDecKernel(void *inputPtr)
         pictureControlSetPtr->intraCodedArea += (EB_U32)contextPtr->totIntraCodedArea;
         pictureControlSetPtr->encDecCodedLcuCount += (EB_U32)contextPtr->codedLcuCount;
         lastLcuFlag = (pictureControlSetPtr->lcuTotalCount == pictureControlSetPtr->encDecCodedLcuCount);
-        //printf("[%p]: Tile %d, coded lcu count %d, total coded lcu count %d, lastLcuFlag is %d\n",
+        //SVT_LOG("[%p]: Tile %d, coded lcu count %d, total coded lcu count %d, lastLcuFlag is %d\n",
         //        contextPtr, encDecTasksPtr->tileIndex,
         //        contextPtr->codedLcuCount,
         //        pictureControlSetPtr->encDecCodedLcuCount, lastLcuFlag);

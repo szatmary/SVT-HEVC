@@ -46,7 +46,7 @@ static void dump_buf_desc_to_file(EbPictureBufferDesc_t* reconBuffer, const char
         }
         free(tmpBuf);
     }
-    //printf("---Seek to offset %d(POC pos) for writting\n", offset/descSize);
+    //SVT_LOG("---Seek to offset %d(POC pos) for writting\n", offset/descSize);
     fseek(fp, offset, SEEK_SET);
     assert(ftell(fp) == offset);
 
@@ -71,7 +71,7 @@ static void dump_buf_desc_to_file(EbPictureBufferDesc_t* reconBuffer, const char
         cr_ptr += reconBuffer->strideCr;
     }
     fseek(fp, 0, SEEK_END);
-    //printf("After write POC %d, filesize %d\n", POC, ftell(fp));
+    //SVT_LOG("After write POC %d, filesize %d\n", POC, ftell(fp));
     fclose(fp);
 
 }
@@ -80,11 +80,11 @@ static void dump_buf_desc_to_file(EbPictureBufferDesc_t* reconBuffer, const char
 #ifdef DEBUG_REF_INFO
 static void dump_left_array(NeighborArrayUnit_t *neighbor, int y_pos, int size)
 {
-    printf("*Dump left array\n");
+    SVT_LOG("*Dump left array\n");
     for (int i=0; i<size; i++) {
-        printf("%3u ", neighbor->leftArray[i+y_pos]);
+        SVT_LOG("%3u ", neighbor->leftArray[i+y_pos]);
     }
-    printf("\n----------------------\n");
+    SVT_LOG("\n----------------------\n");
 }
 
 static void dump_intra_ref(IntraReferenceSamples_t* ref, int size, int mask)
@@ -100,11 +100,11 @@ static void dump_intra_ref(IntraReferenceSamples_t* ref, int size, int mask)
         assert(0);
     }
 
-    printf("*Dumping intra reference array for component %d\n", mask);
+    SVT_LOG("*Dumping intra reference array for component %d\n", mask);
     for (int i=0; i<size; i++) {
-        printf("%3u ", ptr[i]);
+        SVT_LOG("%3u ", ptr[i]);
     }
-    printf("\n----------------------\n");
+    SVT_LOG("\n----------------------\n");
 }
 
 static void dump_block_from_desc(int size, EbPictureBufferDesc_t *buf_tmp, int startX, int startY, int componentMask)
@@ -132,30 +132,30 @@ static void dump_block_from_desc(int size, EbPictureBufferDesc_t *buf_tmp, int s
     }
 
     int offset=((stride*(buf_tmp->originY+startY))>>subHeightCMinus1) +((startX+buf_tmp->originX)>>subWidthCMinus1);
-    printf("bitDepth is %d, dump block size %d at offset %d, (%d, %d), component is %s\n",
+    SVT_LOG("bitDepth is %d, dump block size %d at offset %d, (%d, %d), component is %s\n",
             bitDepth, size, offset, startX, startY, componentMask==0?"luma":(componentMask==1?"Cb":"Cr"));
             unsigned char* start_tmp=buf+offset*val;
             for (int i=0;i<size;i++) {
                 for (int j=0;j<size+1;j++) {
                     if (j==size) {
-                        printf("|||");
+                        SVT_LOG("|||");
                     } else if (j%4 == 0) {
-                        printf("|");
+                        SVT_LOG("|");
                     }
 
                     if (bitDepth == 8) {
-                        printf("%4u ", start_tmp[j]);
+                        SVT_LOG("%4u ", start_tmp[j]);
                     } else if (bitDepth == 16) {
-                        printf("%4d ", *((EB_S16*)start_tmp + j));
+                        SVT_LOG("%4d ", *((EB_S16*)start_tmp + j));
                     } else {
-                        printf("bitDepth is %d\n", bitDepth);
+                        SVT_LOG("bitDepth is %d\n", bitDepth);
                         assert(0);
                     }
                 }
-                printf("\n");
+                SVT_LOG("\n");
                 start_tmp += stride*val;
             }
-    printf("------------------------\n");
+    SVT_LOG("------------------------\n");
 }
 #endif
 /*******************************************
@@ -1028,7 +1028,7 @@ static void EncodeLoop(
         {
             int chroma_size = tuSize > MIN_PU_SIZE? (tuSize >> subWidthCMinus1): tuSize;
 
-            printf("\n----- Dump coeff for 1st loop at (%d, %d), qp is %d -----\n", originX, originY, qp);
+            SVT_LOG("\n----- Dump coeff for 1st loop at (%d, %d), qp is %d -----\n", originX, originY, qp);
             if (componentMask & PICTURE_BUFFER_DESC_LUMA_MASK) {
                 dump_block_from_desc(tuSize, coeffSamplesTB, originX&63, originY&63, 0);
             }
@@ -1036,7 +1036,7 @@ static void EncodeLoop(
             //    dump_block_from_desc(chroma_size, coeffSamplesTB, originX&63, originY&63, 1);
             //}
 
-            printf("\n----- Dump residual for 1st loop at (%d, %d)-----\n", originX, originY);
+            SVT_LOG("\n----- Dump residual for 1st loop at (%d, %d)-----\n", originX, originY);
             if (componentMask & PICTURE_BUFFER_DESC_LUMA_MASK) {
                 dump_block_from_desc(tuSize, residual16bit, originX&63, originY&63, 0);
             }
@@ -3197,7 +3197,7 @@ EB_EXTERN void EncodePass(
             EB_BOOL  tileLeftBoundary = (lcuPtr->lcuEdgeInfoPtr->tileLeftEdgeFlag == EB_TRUE && ((contextPtr->cuOriginX & (lcuPtr->size - 1)) == 0)) ? EB_TRUE : EB_FALSE;
             EB_BOOL  tileTopBoundary = (lcuPtr->lcuEdgeInfoPtr->tileTopEdgeFlag == EB_TRUE && ((contextPtr->cuOriginY & (lcuPtr->size - 1)) == 0)) ? EB_TRUE : EB_FALSE;
             EB_BOOL  tileRightBoundary = (lcuPtr->lcuEdgeInfoPtr->tileRightEdgeFlag == EB_TRUE && (((contextPtr->cuOriginX + cuStats->size) & (lcuPtr->size - 1)) == 0)) ? EB_TRUE : EB_FALSE;
-            //printf("LCU (%d, %d), left/top/right boundary %d/%d/%d\n", lcuOriginX, lcuOriginY,
+            //SVT_LOG("LCU (%d, %d), left/top/right boundary %d/%d/%d\n", lcuOriginX, lcuOriginY,
             //        tileLeftBoundary, tileTopBoundary, tileRightBoundary);
 
             EncodePassPreFetchRef(
@@ -3247,12 +3247,12 @@ EB_EXTERN void EncodePass(
             }
 
             //if (pictureControlSetPtr->pictureNumber == 1) {
-            //    printf("POC %d, ", pictureControlSetPtr->pictureNumber);
+            //    SVT_LOG("POC %d, ", pictureControlSetPtr->pictureNumber);
             //    if (cuPtr->predictionModeFlag == INTRA_MODE) {
-            //        printf("(%d, %d), pu size %d, intraLumaMode %d\n",
+            //        SVT_LOG("(%d, %d), pu size %d, intraLumaMode %d\n",
             //                contextPtr->cuOriginX, contextPtr->cuOriginY, cuStats->size, cuPtr->predictionUnitArray->intraLumaMode);
             //    } else {
-            //        printf("(%d, %d), pu size %d,  inter mode, merge flag  %d, mvp (%d, %d), tileIdx %d\n",
+            //        SVT_LOG("(%d, %d), pu size %d,  inter mode, merge flag  %d, mvp (%d, %d), tileIdx %d\n",
             //                contextPtr->cuOriginX, contextPtr->cuOriginY, cuStats->size,
             //                cuPtr->predictionUnitArray[0].mergeFlag,
             //                cuPtr->predictionUnitArray->mv[0].x,
@@ -3357,7 +3357,7 @@ EB_EXTERN void EncodePass(
                         int originX = contextPtr->cuOriginX;
                         int originY = contextPtr->cuOriginY;
                         int tuSize = cuStats->size;
-                        printf("\n----- Dump prediction for 1st loop at (%d, %d)-----\n", originX, originY);
+                        SVT_LOG("\n----- Dump prediction for 1st loop at (%d, %d)-----\n", originX, originY);
 
                         int chroma_size = tuSize > MIN_PU_SIZE? (tuSize >> subWidthCMinus1): tuSize;
 
@@ -3594,7 +3594,7 @@ EB_EXTERN void EncodePass(
                     EB_U8   intraLumaMode = lcuPtr->intra4x4Mode[((MD_SCAN_TO_RASTER_SCAN[cuItr] - 21) << 2) + partitionIndex];
                     EB_U8   intraLumaModeForChroma = lcuPtr->intra4x4Mode[((MD_SCAN_TO_RASTER_SCAN[cuItr] - 21) << 2)];
 
-                    //printf("Intra 4x4 block (%d, %d), luma mode is %d\n", partitionOriginX, partitionOriginY, intraLumaMode);
+                    //SVT_LOG("Intra 4x4 block (%d, %d), luma mode is %d\n", partitionOriginX, partitionOriginY, intraLumaMode);
 
                     // Set the PU Loop Variables
                     puPtr = cuPtr->predictionUnitArray;
@@ -3958,7 +3958,7 @@ EB_EXTERN void EncodePass(
                 cbCoeffBits = 0;
                 crCoeffBits = 0;
 
-                //printf("sizeof %i \n",sizeof(CodingUnit_t));
+                //SVT_LOG("sizeof %i \n",sizeof(CodingUnit_t));
                 EB_U32  totTu = (cuStats->size < MAX_LCU_SIZE) ? 1 : 4;
                 EB_U8   tuIt;
 

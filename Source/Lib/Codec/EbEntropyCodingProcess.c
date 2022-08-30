@@ -397,7 +397,7 @@ void* EntropyCodingKernel(void *inputPtr)
                 if(yLcuIndex == 0) {
                     EbBlockOnMutex(pictureControlSetPtr->entropyCodingPicMutex);
                     if (pictureControlSetPtr->entropyCodingPicResetFlag) {
-                        //printf("[%lld]:Reset pic %d at tile %d, yLcuIndex is %d\n",
+                        //SVT_LOG("[%lld]:Reset pic %d at tile %d, yLcuIndex is %d\n",
                         //        EbGetSysTimeMs(),
                         //        pictureControlSetPtr->pictureNumber, tileIdx, yLcuIndex + yLcuStart);
                         pictureControlSetPtr->entropyCodingPicResetFlag = EB_FALSE;
@@ -483,10 +483,10 @@ void* EntropyCodingKernel(void *inputPtr)
 
                         //Jing:tile end, may not be the slice end
                         if (!lastLcuFlagInSlice) {
-                            //printf("[%lld]:Encode tile end for tile %d\n", EbGetSysTimeMs(), tileIdx);
+                            //SVT_LOG("[%lld]:Encode tile end for tile %d\n", EbGetSysTimeMs(), tileIdx);
                             EncodeTileFinish(pictureControlSetPtr->entropyCodingInfo[tileIdx]->entropyCoderPtr);
                         } else {
-                            //printf("[%lld]:Encode slice end for tile %d\n", EbGetSysTimeMs(), tileIdx);
+                            //SVT_LOG("[%lld]:Encode slice end for tile %d\n", EbGetSysTimeMs(), tileIdx);
 						    EncodeSliceFinish(pictureControlSetPtr->entropyCodingInfo[tileIdx]->entropyCoderPtr);
                         }
 
@@ -497,7 +497,7 @@ void* EntropyCodingKernel(void *inputPtr)
                         for (EB_U32 i = 0; i < tileCnt; i++) {
                             if (pictureControlSetPtr->entropyCodingInfo[i]->entropyCodingPicDone == EB_FALSE) {
                                 pic_ready = EB_FALSE;
-                                //printf("current POC %d not fully ready, tile %d missing\n", pictureControlSetPtr->pictureNumber, i);
+                                //SVT_LOG("current POC %d not fully ready, tile %d missing\n", pictureControlSetPtr->pictureNumber, i);
                                 break;
                             }
                         }

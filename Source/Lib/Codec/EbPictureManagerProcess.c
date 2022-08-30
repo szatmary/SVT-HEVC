@@ -103,7 +103,7 @@ static void ConfigureTileGroupInfo(PictureParentControlSet_t *ppcsPtr, EB_U16 tg
             // Get the width/height of tile group in LCU
             tileGroupInfoPtr->tileGroupHeightInLcu = tileGroupInfoPtr->tileGroupLcuEndY - tileGroupInfoPtr->tileGroupLcuOriginY;
             tileGroupInfoPtr->tileGroupWidthInLcu = tileGroupInfoPtr->tileGroupLcuEndX - tileGroupInfoPtr->tileGroupLcuOriginX;
-            //printf("---TileGroupIdx %d,TL (%d, %d), BR (%d, %d), ColXRow %dX%d\n",
+            //SVT_LOG("---TileGroupIdx %d,TL (%d, %d), BR (%d, %d), ColXRow %dX%d\n",
             //        tileGroupIdx, tileGroupInfoPtr->tileGroupLcuOriginX, tileGroupInfoPtr->tileGroupLcuOriginY,
             //        tileGroupInfoPtr->tileGroupLcuEndX, tileGroupInfoPtr->tileGroupLcuEndY,
             //        tileGroupInfoPtr->tileGroupWidthInLcu, tileGroupInfoPtr->tileGroupHeightInLcu);
@@ -687,7 +687,7 @@ void* PictureManagerKernel(void *inputPtr)
 
                 if(availabilityFlag == EB_TRUE) {
 
-                    //printf("PICTURE MANAGER RELEASE %d\n", (int)entryPictureControlSetPtr->pictureNumber);
+                    //SVT_LOG("PICTURE MANAGER RELEASE %d\n", (int)entryPictureControlSetPtr->pictureNumber);
                     // Get New  Empty Child PCS from PCS Pool
                     EbGetEmptyObject(
                         contextPtr->pictureControlSetFifoPtrArray[0],
@@ -721,7 +721,7 @@ void* PictureManagerKernel(void *inputPtr)
                     ChildPictureControlSetPtr->encDecCodedLcuCount 						= 0;
                     ChildPictureControlSetPtr->resetDone 								= EB_FALSE;
 
-                   // printf("POC [%lu], use pcs %p\n", ChildPictureControlSetPtr->pictureNumber, ChildPictureControlSetPtr);
+                   // SVT_LOG("POC [%lu], use pcs %p\n", ChildPictureControlSetPtr->pictureNumber, ChildPictureControlSetPtr);
 
 
                     // Update temporal ID

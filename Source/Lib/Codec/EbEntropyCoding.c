@@ -6747,7 +6747,7 @@ static void CodeSliceHeader(
                 if (offset[tileIdx] > maxOffset) {
                     maxOffset = offset[tileIdx];
                 }
-                //printf("tile %d, size %d\n", tileIdx, offset[tileIdx]);
+                //SVT_LOG("tile %d, size %d\n", tileIdx, offset[tileIdx]);
             }
 
             EB_U32 offsetLenMinus1 = 0;
